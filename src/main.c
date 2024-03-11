@@ -1,12 +1,11 @@
 #include "./cud3d.h"
 
-
 int	main(void)
 {
 	int		fd;
 	char	*line;
 
-	fd = open("./src/file", O_RDONLY, 0);
+	fd = open("./test.txt", O_RDONLY, 0);
 	if (fd == -1)
 	{
 		perror("Error opening file");

@@ -52,4 +52,7 @@ Mkfile.old
 dkms.conf
 
 #Libraries
-# minilibx-linux
+minilibx-linux
+
+#Exec by name
+Cube3D

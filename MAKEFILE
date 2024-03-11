@@ -1,126 +1,51 @@
-#####   COLORS   #####
+# Makefile for Cute Project
 
-END				= \033[0m
+# Compiler
+CC = gcc
 
-GREY			= \033[30m
-RED				= \033[31m
-GREEN			= \033[32m
-YELLOW			= \033[33m
-BLUE			= \033[34m
-PURPLE			= \033[35m
-CYAN			= \033[36m
+# Compiler flags
+CFLAGS = -Wall -Wextra -Werror
 
-HIGH_RED		= \033[91m
+# Directories
+SRC_DIR = src
+GNL_DIR = get_next_line
+OBJ_DIR = obj
 
-#####   INFO   #####
+# Source files
+SRC_FILES = $(wildcard $(SRC_DIR)/*.c) \
+            $(wildcard $(GNL_DIR)/*.c)
 
-NAME			= so_long
+# Object files
+OBJ_FILES = $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRC_FILES))
 
-#####   COMMANDS   #####
+# Executable
+TARGET = Cube3D
 
-CC				= gcc
-EXTENSION		= c
-CFLAGS			= -Wall -Wextra -Werror -g -Wno-unused-result
-MINILIBX	=	make -C mlx_linux
-MLX			=	mlx_linux/libmlx.a
+# Dependencies
+DEPS = -I$(SRC_DIR) -I$(GNL_DIR)
 
-EXECUTION		= ./$(NAME)
-MD				= mkdir -p
-RM				= rm -rf
-TAR_EXCLUSIONS	= --exclude=".git" \
-				  --exclude=".vscode" \
-				  --exclude="objs" \
-				  --exclude="._" \
-				  --exclude="*.DS_Store"
-TAR				= tar $(TAR_EXCLUSIONS) -cf
+# Main target
+all: $(TARGET)
 
-#####   GIT   #####
+# Rule for compiling object files
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+	@mkdir -p $(@D)
+	$(CC) $(CFLAGS) $(DEPS) -c $< -o $@
 
-ADD = git add .
-COMMIT = git commit -m
-PUSH = git push
+# Rule for linking object files into the executable
+$(TARGET): $(OBJ_FILES)
+	$(CC) $(CFLAGS) $(DEPS) $^ -o $@
 
-#####   RESOURCES   #####
-
-INCLUDE			= includes
-SRC_DIR			= sources
-OBJ_DIR			= objs
-
-SRCS			= $(foreach DIR, $(SRC_SUB_DIRS), $(wildcard $(DIR)/*.$(EXTENSION)))
-OBJS			= 
-
-
-#####   BASE RULES   #####
-
-all: $(NAME) 
-
-
-$(NAME): $(OBJ)
-
-$(NAME): $(OBJS)
-# @ $(MINILIBX)
-	@make -C $(PRINTF_DIR)
-	make -C mlx_linux/
-	$(CC) $(OBJS) $(PRINTF_LIB) $(MLX) -Lmlx_linux -lmlx_Linux -L/usr/lib -Imlx_linux -lXext -lX11 -lm -lz -o $(NAME)
-	# -Lmlx_linux -lmlx_Linux -L/usr/lib -Imlx_linux -lXext -lX11 -lm -lz 
-#  @ $(CC) $(MLX) $(LINKER) $(CFLAGS) $(OBJS) -o $@
-	@ echo "$(GREEN)[+] $(NAME) compiled$(END)"
-
-%.o: %.c
-	# $(CC) -I/usr/include -Imlx_linux -O3 -c $< -o $@
-	$(CC) $(CFLAGS) -I $(INCLUDE) -Imlx_linux -O3 -c $< -o $@
-
-# %.o: %.c
-# 	@ echo "$(BLUE)[+] $@ compiled$(END)"
-
-$(OBJ_SUB_DIRS):
-	@ $(MD) $(OBJ_SUB_DIRS)
-	@ echo "$(PURPLE)[+] $(SRC_DIR) remapped into $(OBJ_DIR) $(END)"
-
-
+# Clean target
 clean:
-	@ $(RM) $(OBJS)
-	@ echo "$(YELLOW)[+] $(OBJ_DIR) cleaned$(END)"
+	rm -rf $(OBJ_DIR)
 
-fclean: clean
-	@ $(RM) $(NAME) $(PRINTF_LIB) $(MLX) mlx_linux/libmlx_Linux.a
-	@ echo "$(YELLOW)[+] $(NAME) fcleaned$(END)"
+# Distclean target
+distclean: clean
+	rm -f $(TARGET)
 
-re: fclean all
+# Rebuild target
+re: distclean all
 
-bonus: all
-
-
-
-#####   EXTRA RULES   #####
-
-test: all
-	clear
-	@ $(EXECUTION)
-
-run: test
-rrun: fclean test
-
-tar: fclean
-	@ $(TAR) ../$(NAME).tar .
-	@ echo "$(GREEN)[+] Made tar$(END)"
-
-val: all
-	valgrind --leak-check=full --show-leak-kinds=all $(EXECUTION)
-var: val
-
-git:
-	@ $(eval MESSAGE := $(or $(m), $(error Usage: make commit m="<commit message>")))
-	@ $(ADD)
-	@ $(COMMIT) $(MESSAGE)
-	@ $(PUSH)clear
-
-setup:
-	@ echo "# dirs\n.vscode\n$(OBJ_DIR)\n\n# files\n$(NAME)\n._*\n.DS_Store" > .gitignore
-	@ $(MD) $(SRC_DIR) $(INCLUDE)
-	@ echo "$(GREEN)[+] Setup completed$(END)"
-
-
-#####   PHONY   #####
-
-.PHONY: all clean fclean re
+# Phony targets
+.PHONY: all clean distclean
