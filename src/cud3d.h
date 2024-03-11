@@ -25,4 +25,6 @@ typedef struct s_colors
 	void *arg3;
 } t_colors;
 
+void    check_name(char *file);
+
 #endif
