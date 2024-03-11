@@ -13,7 +13,8 @@ OBJ_DIR = obj
 
 # Source files
 SRC_FILES = $(wildcard $(SRC_DIR)/*.c) \
-            $(wildcard $(GNL_DIR)/*.c)
+            $(wildcard $(GNL_DIR)/*.c) \
+						$(wildcard $(SRC_DIR)/parser/*.c)
 
 # Object files
 OBJ_FILES = $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRC_FILES))
