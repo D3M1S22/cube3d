@@ -6,26 +6,58 @@
 # include <fcntl.h>
 # include <stdio.h>
 # include <stdlib.h>
-# include <string.h>
-# include <sys/wait.h>
 # include <unistd.h>
-#	include <readline/readline.h>
-#	include <readline/history.h>
 
-# define ERR_INFILE "Infile"
-# define ERR_OUTFILE "Outfile"
-# define ERR_INPUT "Invalid number of arguments.\n"
-# define ERR_PIPE "Pipe"
-# define ERR_CMD "Command not found\n"
+#define NO 0; //Paths 
+#define SO 1;
+#define WE 2;
+#define EA 3;
 
-typedef struct s_colors
+typedef struct s_color
 {
-	void *arg1;
-	void *arg2;
-	void *arg3;
-} t_colors;
+	int r;
+    int g;
+    int b;
+} t_color;
 
-void    error(char *msg);
+typedef struct s_textures
+{
+    char **texture;
+
+}t_textures;
+
+typedef struct s_player
+{
+    t_textures *player_textures;
+} t_player;
+
+typedef struct s_map
+{
+    char **grid;
+    t_textures *map_textures;
+    t_color *color;
+
+} t_map;
+
+typedef struct s_game
+{
+    t_map *map;
+    t_player *player;
+} t_game;
+
+// Errors
+void    error(char *msg);\
+
+// Parser
 void    check_name(char *file);
+void    parse_file(char *file, t_game *game);
+void	parse_arguments(int fd, t_map *map);
+void	parse_map(int fd, t_map *map);
+
+
+//Strings
+char	**ft_split(char const *s, char c);
+char	*ft_strdup(const char *s1);
+
 
 #endif

@@ -8,13 +8,15 @@ CFLAGS = -Wall -Wextra -Werror
 
 # Directories
 SRC_DIR = src
+LIBFT_DIR = libft
 GNL_DIR = get_next_line
 OBJ_DIR = obj
 
 # Source files
 SRC_FILES = $(wildcard $(SRC_DIR)/*.c) \
+			$(wildcard $(LIBFT_DIR)/*.c) \
             $(wildcard $(GNL_DIR)/*.c) \
-						$(wildcard $(SRC_DIR)/parser/*.c)
+			$(wildcard $(SRC_DIR)/parser/*.c)
 
 # Object files
 OBJ_FILES = $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRC_FILES))
@@ -23,7 +25,7 @@ OBJ_FILES = $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRC_FILES))
 TARGET = Cube3D
 
 # Dependencies
-DEPS = -I$(SRC_DIR) -I$(GNL_DIR)
+DEPS = -I$(SRC_DIR) -I$(GNL_DIR) -I$(LIBFT_DIR)
 
 # Main target
 all: $(TARGET)
