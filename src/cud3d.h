@@ -22,42 +22,47 @@ typedef struct s_color
 
 typedef struct s_textures
 {
-    char **texture;
+    char    **texture;
 
 }t_textures;
 
 typedef struct s_player
 {
-    t_textures *player_textures;
+    t_textures  *player_textures;
 } t_player;
 
 typedef struct s_map
 {
-    char **grid;
-    t_textures *map_textures;
-    t_color *color;
+    char        **grid;
+    t_textures  *map_textures;
+    t_color     *ceiling;
+    t_color     *floor;
 
 } t_map;
 
 typedef struct s_game
 {
-    t_map *map;
-    t_player *player;
+    t_map       *map;
+    t_player    *player;
 } t_game;
 
 // Errors
-void    error(char *msg);\
+void    error(char *msg);
+void	free_matrix(char **mtx);
 
 // Parser
 void    check_name(char *file);
 void    parse_file(char *file, t_game *game);
-void	parse_arguments(int fd, t_map *map);
-void	parse_map(int fd, t_map *map);
-
+void	parse_arguments(int fd, t_map *map, int *j);
+void	parse_grid(int fd, t_map *map, int *skip);
+char 	*skip_till_map(int fd, int *j);
+int		count_rows(int fd);
+void    parse_map(t_map *map);
 
 //Strings
 char	**ft_split(char const *s, char c);
 char	*ft_strdup(const char *s1);
+
 
 
 #endif
