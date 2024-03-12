@@ -5,10 +5,10 @@ void	init_map_textures(t_map *map)
 {
 	map->map_textures = (t_textures *)malloc(sizeof(t_textures));
 	map->map_textures->texture = (char **)malloc(sizeof(char *) * 4);
-	map->map_textures->texture[0] = 0;
-	map->map_textures->texture[1] = 0;
-	map->map_textures->texture[2] = 0;
-	map->map_textures->texture[3] = 0;
+	map->map_textures->texture[NO] = 0;
+	map->map_textures->texture[SO] = 0;
+	map->map_textures->texture[WE] = 0;
+	map->map_textures->texture[EA] = 0;
 
 }
 
@@ -18,13 +18,13 @@ void	pop_structs(char *line, t_map *map, int *x)
 	char	**rgb;
 	mapped_args = ft_split(line, ' ');
 	if (mapped_args[0][0] == 'N' && ++*x <= 6)
-		map->map_textures->texture[0] = ft_strdup(mapped_args[1]);
+		map->map_textures->texture[NO] = ft_strdup(mapped_args[1]);
 	else if (mapped_args[0][0] == 'S' && ++*x <= 6)
-		map->map_textures->texture[1] = ft_strdup(mapped_args[1]);
+		map->map_textures->texture[SO] = ft_strdup(mapped_args[1]);
 	else if (mapped_args[0][0] == 'W' && ++*x <= 6)
-		map->map_textures->texture[2] = ft_strdup(mapped_args[1]);
+		map->map_textures->texture[WE] = ft_strdup(mapped_args[1]);
 	else if (mapped_args[0][0] == 'E' && ++*x <= 6)
-		map->map_textures->texture[3] = ft_strdup(mapped_args[1]);
+		map->map_textures->texture[EA] = ft_strdup(mapped_args[1]);
 	else if ((mapped_args[0][0] == 'F' || mapped_args[0][0] == 'C') && ++*x <= 6)
 	{
 		rgb = ft_split(mapped_args[1], ',');

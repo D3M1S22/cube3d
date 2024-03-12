@@ -8,10 +8,10 @@
 # include <stdlib.h>
 # include <unistd.h>
 
-#define NO 0; //Paths 
-#define SO 1;
-#define WE 2;
-#define EA 3;
+#define NO 0 //Paths 
+#define SO 1
+#define WE 2
+#define EA 3
 
 typedef struct s_color
 {
