@@ -45,6 +45,7 @@ void pop_mtx(char **mtx, t_map *map, int length)
 	i = -1;
 	while (map->grid[++i])
 		mtx[i] = copy_line(map->grid[i], length);
+	mtx[i] = 0;
 	free_matrix(map->grid);
 	map->grid = mtx;
 }
@@ -59,6 +60,6 @@ void parse_map(t_map *map)
 	while (map->grid[rows])
 		rows++;
 	find_longest(map, &x);
-	mtx = (char **)malloc(sizeof(char *) * rows);
+	mtx = (char **)malloc(sizeof(char *) * rows + 1);
 	pop_mtx(mtx, map, x);
 }

@@ -25,14 +25,14 @@ int	main(int argc, char **argv)
     init_game_struct(game);
     check_name(argv[1]);
     parse_file(argv[1], game);
-    write(1,"cao", 3);
     parse_map(game->map);
 
+    
     // TEST PARSER
-    printf("textureN = %s\n", game->map->map_textures->texture[0]);
-	printf("textureS = %s\n", game->map->map_textures->texture[1]);
-	printf("textureW = %s\n", game->map->map_textures->texture[2]);
-	printf("textureE = %s\n", game->map->map_textures->texture[3]);
+    printf("texture N = %s\n", game->map->map_textures->texture[0]);
+	printf("texture S = %s\n", game->map->map_textures->texture[1]);
+	printf("texture W = %s\n", game->map->map_textures->texture[2]);
+	printf("texture E = %s\n", game->map->map_textures->texture[3]);
     printf("ceiling R = %d\nceiling G = %d\nceiling B = %d\n", game->map->ceiling->r, game->map->ceiling->g, game->map->ceiling->b);
     printf("floor R = %d\nfloor G = %d\nfloor B = %d\n", game->map->floor->r, game->map->floor->g, game->map->floor->b);
     int i = -1;

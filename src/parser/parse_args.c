@@ -1,5 +1,15 @@
 #include "../cud3d.h"
-#include <strings.h>
+
+void	pop_rgb(t_color *color, char *_rgb)
+{
+	char	**rgb;
+
+	rgb = ft_split(_rgb, ',');
+	color->r = atoi(rgb[0]);
+	color->g = atoi(rgb[1]);
+	color->b = atoi(rgb[2]);
+	free_matrix(rgb);
+}
 
 void	init_map_textures(t_map *map)
 {
@@ -15,7 +25,7 @@ void	init_map_textures(t_map *map)
 void	pop_structs(char *line, t_map *map, int *x)
 {
 	char	**mapped_args;
-	char	**rgb;
+
 	mapped_args = ft_split(line, ' ');
 	if (mapped_args[0][0] == 'N' && ++*x <= 6)
 		map->map_textures->texture[NO] = ft_strdup(mapped_args[1]);
@@ -26,19 +36,10 @@ void	pop_structs(char *line, t_map *map, int *x)
 	else if (mapped_args[0][0] == 'E' && ++*x <= 6)
 		map->map_textures->texture[EA] = ft_strdup(mapped_args[1]);
 	else if ((mapped_args[0][0] == 'F') && ++*x <= 6)
-	{
-		rgb = ft_split(mapped_args[1], ',');
-		map->floor->r = atoi(rgb[0]);
-		map->floor->g = atoi(rgb[1]);
-		map->floor->b = atoi(rgb[2]);
-	}
+		pop_rgb(map->floor, mapped_args[1]);
 	else if ((mapped_args[0][0] == 'C') && ++*x <= 6)
-	{
-		rgb = ft_split(mapped_args[1], ',');
-		map->ceiling->r = atoi(rgb[0]);
-		map->ceiling->g = atoi(rgb[1]);
-		map->ceiling->b = atoi(rgb[2]);
-	}
+		pop_rgb(map->ceiling, mapped_args[1]);
+	free_matrix(mapped_args);
 }
 
 void	parse_arguments(int fd, t_map *map, int *j)

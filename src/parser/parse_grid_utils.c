@@ -30,7 +30,6 @@ char 	*skip_till_map(int fd, int *j)
 	(*j)++;
 	while (!find_one(line))
 	{
-		printf("%s\n",line);
 		free(line);
 		line = get_next_line(fd);
 		(*j)++;
