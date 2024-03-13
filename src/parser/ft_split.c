@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dshushku <dshushku@student.42roma.it>      +#+  +:+       +#+        */
+/*   By: fbriglia <fbriglia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/26 02:59:14 by dshushku          #+#    #+#             */
-/*   Updated: 2024/03/12 14:04:14 by dshushku         ###   ########.fr       */
+/*   Updated: 2024/03/12 20:55:17 by fbriglia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../cud3d.h"
+
 static int	strlen_neg_pos(const char *s)
 {
 	int	i;

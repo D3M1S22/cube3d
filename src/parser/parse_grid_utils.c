@@ -22,7 +22,7 @@ int	find_one(char *line)
 	return (0);
 }
 
-char 	*skip_till_map(int fd, int *j)
+char	*skip_till_map(int fd, int *j)
 {
 	char	*line;
 
@@ -37,7 +37,7 @@ char 	*skip_till_map(int fd, int *j)
 	return (line);
 }
 
-int		count_rows(int fd)
+int	count_rows(int fd)
 {
 	char	*line;
 	int		rows;

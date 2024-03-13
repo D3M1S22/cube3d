@@ -16,7 +16,8 @@ OBJ_DIR = obj
 SRC_FILES = $(wildcard $(SRC_DIR)/*.c) \
 			$(wildcard $(LIBFT_DIR)/*.c) \
             $(wildcard $(GNL_DIR)/*.c) \
-			$(wildcard $(SRC_DIR)/parser/*.c)
+			$(wildcard $(SRC_DIR)/parser/*.c) \
+			$(wildcard $(SRC_DIR)/checker/*.c)
 
 # Object files
 OBJ_FILES = $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRC_FILES))

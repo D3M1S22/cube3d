@@ -1,5 +1,4 @@
 #include "../cud3d.h"
-#include <strings.h>
 
 int	empty_line(char *line)
 {
@@ -31,6 +30,8 @@ int	good_map_line(char *line)
 			return (0);
 		}
 	}
+	if (line[i-1] != '1')
+		error("wrong last border");
 	return (1);
 }
 
@@ -40,7 +41,7 @@ void	pop_grid(t_map *map, int *skip)
 	char	*line;
 	int		fd;
 
-	fd = open("test.cub" , O_RDONLY, 0);
+	fd = open("test.cub", O_RDONLY, 0);
 	i = 0;
 	while (++i < *skip)
 	{
@@ -48,23 +49,22 @@ void	pop_grid(t_map *map, int *skip)
 		free(line);
 	}
 	line = get_next_line(fd);
-	map->grid[0] = line;
-	i = 1;
+	i = 0;
 	while (line != 0)
 	{
 		if (!good_map_line(line))
 			error("wrong map input");
-		line = get_next_line(fd);
-		if(line)
+		if (line)
 			map->grid[i] = line;
+		line = get_next_line(fd);
 		i++;
 	}
-	
+	map->grid[i] = NULL;
 }
 
 void	parse_grid(int fd, t_map *map, int *skip)
 {
-	int		x;
+	int	x;
 
 	skip_till_map(fd, skip);
 	x = count_rows(fd);

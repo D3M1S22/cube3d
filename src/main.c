@@ -6,6 +6,15 @@ void    error(char *msg)
     exit(0);
 }
 
+void    print_mtx(char **mtx)
+{
+    int i;
+
+    i = -1;
+    while(mtx[++i])
+        printf("%s\n", mtx[i]);
+}
+
 void    init_game_struct(t_game *game)
 {
     game->map = (t_map *)malloc(sizeof(t_map));
@@ -26,16 +35,16 @@ int	main(int argc, char **argv)
     check_name(argv[1]);
     parse_file(argv[1], game);
     parse_map(game->map);
+    checker_map(game->map);
 
     
     // TEST PARSER
-    printf("texture N = %s\n", game->map->map_textures->texture[0]);
-	printf("texture S = %s\n", game->map->map_textures->texture[1]);
-	printf("texture W = %s\n", game->map->map_textures->texture[2]);
-	printf("texture E = %s\n", game->map->map_textures->texture[3]);
-    printf("ceiling R = %d\nceiling G = %d\nceiling B = %d\n", game->map->ceiling->r, game->map->ceiling->g, game->map->ceiling->b);
-    printf("floor R = %d\nfloor G = %d\nfloor B = %d\n", game->map->floor->r, game->map->floor->g, game->map->floor->b);
-    int i = -1;
-    while (game->map->grid[++i])
-        printf("%s\n", game->map->grid[i]);
+    // printf("maxlen =  %d\n", game->map->len);
+//     printf("texture N = %s\n", game->map->map_textures->texture[0]);
+// 	printf("texture S = %s\n", game->map->map_textures->texture[1]);
+// 	printf("texture W = %s\n", game->map->map_textures->texture[2]);
+// 	printf("texture E = %s\n", game->map->map_textures->texture[3]);
+//     printf("ceiling R = %d\nceiling G = %d\nceiling B = %d\n", game->map->ceiling->r, game->map->ceiling->g, game->map->ceiling->b);
+//     printf("floor R = %d\nfloor G = %d\nfloor B = %d\n", game->map->floor->r, game->map->floor->g, game->map->floor->b);
+    print_mtx(game->map->grid);
 }

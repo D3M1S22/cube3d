@@ -6,11 +6,12 @@
 /*   By: fbriglia <fbriglia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/01 14:14:46 by fbriglia          #+#    #+#             */
-/*   Updated: 2024/03/11 23:49:36 by fbriglia         ###   ########.fr       */
+/*   Updated: 2024/03/13 15:39:47 by fbriglia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+#include <string.h>
 
 char	*clean_end(char *line_sporca)
 {
@@ -58,11 +59,6 @@ char	*clean_start(char *line_sporca)
 		line_pulita[j] = line_sporca[j];
 		j++;
 	}
-	// if (line_sporca[j] == '\n')
-	// {
-	// 	line_pulita[j] = line_sporca[j];
-	// 	j++;
-	// }
 	line_pulita[j] = '\0';
 	return (line_pulita);
 }

@@ -3,7 +3,7 @@
 void	find_longest(t_map *map, int *longest)
 {
 	int	x;
-	int i;
+	int	i;
 
 	i = -1;
 	*longest = 0;
@@ -21,11 +21,12 @@ char	*copy_line(char *src, int length)
 	int		i;
 	int		j;
 
-	i = -1;
+	i = 0;
 	j = 0;
-	line = (char *)malloc(sizeof(char)* length + 1);
-	line[length] = 0;
-	while (++i < length)
+	line = (char *)malloc(sizeof(char) * length + 2);
+	line[length + 2] = '\0';
+	line[0] = 'c';
+	while (++i < length+2)
 	{
 		if (src[j])
 		{
@@ -35,31 +36,49 @@ char	*copy_line(char *src, int length)
 		else
 			line[i] = ' ';
 	}
+	line[i-1] = 'c';
 	return (line);
 }
 
-void pop_mtx(char **mtx, t_map *map, int length)
+
+void	pop_mtx(char **mtx, t_map *map, int length)
 {
-	int i;
+	int	i;
+	int j;
 
 	i = -1;
+	mtx[0] = (char *)malloc(sizeof(char)* length +2);
+	mtx[0][length + 2] = '\0';
+	while (++i < length +2)
+		mtx[0][i] = 'c';
+	i = -1;
 	while (map->grid[++i])
-		mtx[i] = copy_line(map->grid[i], length);
-	mtx[i] = 0;
+		mtx[i+1] = copy_line(map->grid[i], length);
+	j = -1;
+	i++;
+	mtx[i] = (char *)malloc(sizeof(char)* length +2);
+	mtx[i][length+2] = '\0';
+	while (++j < length + 2)
+		mtx[map->rows+2][j] = 'c';
 	free_matrix(map->grid);
 	map->grid = mtx;
 }
 
-void parse_map(t_map *map)
+void	parse_map(t_map *map)
 {
-	int		rows;
-	int		x;
-	char	**mtx;
+	int rows;
+	int x;
+	char **mtx;
 
 	rows = 0;
 	while (map->grid[rows])
 		rows++;
+	map->rows = rows -1;
 	find_longest(map, &x);
-	mtx = (char **)malloc(sizeof(char *) * rows + 1);
+	mtx = (char **)malloc(sizeof(char *) * (map->rows + 4));
+	mtx[map->rows+3] = 0;
+	map->len = x -1;
+	if (map->len <  2 || map->rows < 2)
+		error("wrong map dimension");
 	pop_mtx(mtx, map, x);
 }

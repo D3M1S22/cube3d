@@ -19,7 +19,6 @@ void	init_map_textures(t_map *map)
 	map->map_textures->texture[SO] = 0;
 	map->map_textures->texture[WE] = 0;
 	map->map_textures->texture[EA] = 0;
-
 }
 
 void	pop_structs(char *line, t_map *map, int *x)
@@ -45,7 +44,7 @@ void	pop_structs(char *line, t_map *map, int *x)
 void	parse_arguments(int fd, t_map *map, int *j)
 {
 	char	*line;
-	int 	i;
+	int		i;
 	int		x;
 
 	x = 0;
@@ -55,13 +54,13 @@ void	parse_arguments(int fd, t_map *map, int *j)
 	while (line && x < 6 && (*j)++)
 	{
 		i = 0;
-		if(line[i]!=0)
+		if (line[i] != 0)
 		{
 			while (line[i] && (line[i] == ' ' || line[i] == '\t'))
 				i++;
-			if(line[i] && (line[i] != 'N' && line[i] != 'S' && line[i] != 'W'
+			if (line[i] && (line[i] != 'N' && line[i] != 'S' && line[i] != 'W'
 					&& line[i] != 'E' && line[i] != 'F' && line[i] != 'C'))
-				error("wrong input");	
+				error("wrong input");
 			if (line[i] != 0)
 				pop_structs(line + i, map, &x);
 		}

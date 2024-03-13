@@ -33,6 +33,8 @@ typedef struct s_player
 
 typedef struct s_map
 {
+    int         len;
+    int         rows;
     char        **grid;
     t_textures  *map_textures;
     t_color     *ceiling;
@@ -49,6 +51,8 @@ typedef struct s_game
 // Errors
 void    error(char *msg);
 void	free_matrix(char **mtx);
+void    print_mtx(char **mtx);
+
 
 // Parser
 void    check_name(char *file);
@@ -58,6 +62,9 @@ void	parse_grid(int fd, t_map *map, int *skip);
 char 	*skip_till_map(int fd, int *j);
 int		count_rows(int fd);
 void    parse_map(t_map *map);
+
+// Checker
+void	checker_map(t_map *map);
 
 //Strings
 char	**ft_split(char const *s, char c);
