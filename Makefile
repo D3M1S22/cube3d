@@ -29,7 +29,8 @@ TARGET = Cube3D
 DEPS = -I$(SRC_DIR) -I$(GNL_DIR) -I$(LIBFT_DIR)
 
 # Main target
-all: $(TARGET)
+all:  $(TARGET)
+
 
 # Rule for compiling object files
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
