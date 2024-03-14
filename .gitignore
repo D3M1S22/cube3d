@@ -53,6 +53,10 @@ dkms.conf
 
 #Libraries
 minilibx-linux
+<<<<<<< Updated upstream
+=======
+mlx
+>>>>>>> Stashed changes
 
 #Exec by name
 Cube3D

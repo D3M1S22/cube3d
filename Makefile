@@ -1,10 +1,10 @@
-# Makefile for Cute Project
-
 # Compiler
 CC = gcc
+MAKE = make
+UNAME := $(shell uname)
 
 # Compiler flags
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wextra -Wall -Werror -Wunreachable-code -Ofast -Imlx
 
 # Directories
 SRC_DIR = src
@@ -14,10 +14,10 @@ OBJ_DIR = obj
 
 # Source files
 SRC_FILES = $(wildcard $(SRC_DIR)/*.c) \
-			$(wildcard $(LIBFT_DIR)/*.c) \
+						$(wildcard $(LIBFT_DIR)/*.c) \
             $(wildcard $(GNL_DIR)/*.c) \
-			$(wildcard $(SRC_DIR)/parser/*.c) \
-			$(wildcard $(SRC_DIR)/checker/*.c)
+						$(wildcard $(SRC_DIR)/parser/*.c) \
+						$(wildcard $(SRC_DIR)/checker/*.c)
 
 # Object files
 OBJ_FILES = $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRC_FILES))
@@ -29,8 +29,12 @@ TARGET = Cube3D
 DEPS = -I$(SRC_DIR) -I$(GNL_DIR) -I$(LIBFT_DIR)
 
 # Main target
+<<<<<<< Updated upstream
 all:  $(TARGET)
 
+=======
+all: mlx_b $(TARGET)
+>>>>>>> Stashed changes
 
 # Rule for compiling object files
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
@@ -39,18 +43,29 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 
 # Rule for linking object files into the executable
 $(TARGET): $(OBJ_FILES)
-	$(CC) $(CFLAGS) $(DEPS) $^ -o $@
+	$(CC) $(CFLAGS) $(DEPS) -Lmlx -lmlx -framework OpenGL -framework AppKit $^ -o $@
+
+# Target to compile mlx
+ifeq ($(UNAME), Darwin)
+mlx_b:
+	$(MAKE) -C mlx
+endif
+
+ifeq ($(UNAME), Linux)
+mlx_b:
+	$(MAKE) -C minilibx-linux
+endif
 
 # Clean target
 clean:
-	rm -rf $(OBJ_DIR)
+	rm -rf $(OBJ_DIR) mlx_o
 
 # Distclean target
-distclean: clean
+fclean: clean
 	rm -f $(TARGET)
 
 # Rebuild target
-re: distclean all
+re: fclean all
 
 # Phony targets
-.PHONY: all clean distclean
+.PHONY: all re clean fclean
