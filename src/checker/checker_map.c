@@ -11,6 +11,7 @@ void	check_borders(t_map *map, int y)
 			+ 1][i] != ' ' && map->grid[map->rows + 1][i] != 'c')
 			error("wrong bot border");
 }
+
 void	check_spaces(t_map *map, int y)
 {
 	int	x;
