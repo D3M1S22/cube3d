@@ -35,20 +35,15 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) $(DEPS) -c $< -o $@
 
-# Rule for linking object files into the executable
-$(TARGET): $(OBJ_FILES)
-	$(CC) $(CFLAGS) $(DEPS) -Lmlx -lmlx -framework OpenGL -framework AppKit $^ -o $@
+
 
 # Target to compile mlx
 ifeq ($(UNAME), Darwin)
+$(TARGET): $(OBJ_FILES)
+	$(CC) $(CFLAGS) $(DEPS) -Lmlx -lmlx -framework OpenGL -framework AppKit $^ -o $@
+
 mlx_b:
 	$(MAKE) -C mlx
-endif
-
-ifeq ($(UNAME), Linux)
-mlx_b:
-	$(MAKE) -C minilibx-linux
-endif
 
 # Clean target
 clean:
@@ -57,6 +52,26 @@ clean:
 # Distclean target
 fclean: clean
 	rm -f $(TARGET)
+
+endif
+
+ifeq ($(UNAME), Linux)
+$(TARGET): $(OBJ_FILES)
+	$(CC) $(CFLAGS) $(DEPS) -Imlx_linux -Lmlx_linux -lmlx -lmlx_Linux -L/usr/lib -lXext -lX11 -lm $^ -o $@
+
+mlx_b:
+	$(MAKE) -C mlx_linux
+
+# Clean target
+clean:
+	rm -rf $(OBJ_DIR) mlx_linux/obj
+
+# Distclean target
+fclean: 
+	rm -f $(TARGET) mlx_linux/*.a
+
+endif
+
 
 # Rebuild target
 re: fclean all

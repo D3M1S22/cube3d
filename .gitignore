@@ -52,7 +52,7 @@ Mkfile.old
 dkms.conf
 
 #Libraries
-minilibx-linux
+mlx_linux
 mlx
 
 #Exec by name
