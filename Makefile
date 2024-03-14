@@ -28,13 +28,7 @@ TARGET = Cube3D
 # Dependencies
 DEPS = -I$(SRC_DIR) -I$(GNL_DIR) -I$(LIBFT_DIR)
 
-# Main target
-<<<<<<< Updated upstream
-all:  $(TARGET)
-
-=======
 all: mlx_b $(TARGET)
->>>>>>> Stashed changes
 
 # Rule for compiling object files
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
