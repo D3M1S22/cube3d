@@ -6,25 +6,35 @@ UNAME := $(shell uname)
 # Compiler flags
 CFLAGS = -Wextra -Wall -Werror -Wunreachable-code -Ofast
 CFLAGS_MAC = -Imlx
-CFLAGS_LINUX = -I/usr/include -Imlx_linux -O3 -c 
+CFLAGS_LINUX = -I/usr/include -Imlx_linux -O3 -c
+
 # Directories
 SRC_DIR = src
 LIBFT_DIR = libft
 GNL_DIR = get_next_line
+PARSER_DIR = $(SRC_DIR)/parser
+CHECKER_DIR = $(SRC_DIR)/checker
 OBJ_DIR = obj
 
 # Source files
-SRC_FILES = $(wildcard $(SRC_DIR)/*.c) \
-						$(wildcard $(LIBFT_DIR)/*.c) \
-            $(wildcard $(GNL_DIR)/*.c) \
-						$(wildcard $(SRC_DIR)/parser/*.c) \
-						$(wildcard $(SRC_DIR)/checker/*.c)
+SRC_FILES = $(SRC_DIR)/main.c \
+            $(GNL_DIR)/get_next_line.c \
+            $(GNL_DIR)/get_next_line_utils.c \
+            $(PARSER_DIR)/check_input.c \
+            $(PARSER_DIR)/ft_split.c \
+            $(PARSER_DIR)/ft_strdup.c \
+            $(PARSER_DIR)/parse_args.c \
+            $(PARSER_DIR)/parse_grid.c \
+            $(PARSER_DIR)/parse_grid_utils.c \
+            $(PARSER_DIR)/parse_map.c \
+            $(PARSER_DIR)/parser.c \
+            $(CHECKER_DIR)/checker_map.c
 
 # Object files
 OBJ_FILES = $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRC_FILES))
 
 # Executable
-TARGET = Cube3D
+TARGET = Cub3D
 
 # Dependencies
 DEPS = -I$(SRC_DIR) -I$(GNL_DIR) -I$(LIBFT_DIR)
@@ -43,7 +53,7 @@ $(TARGET): $(OBJ_FILES)
 	$(CC) $(CFLAGS) $(DEPS) -Lmlx -lmlx -framework OpenGL -framework AppKit $^ -o $@
 
 mlx_b:
-	$(MAKE) -C mlx
+	@$(MAKE) -C mlx
 
 # Clean target
 clean:
@@ -63,7 +73,7 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 
 $(TARGET): $(OBJ_FILES)
 	$(CC) $(CFLAGS) $(CFLAGS_LINUX) $(DEPS) -Imlx_linux -Lmlx_linux -lmlx -lmlx_Linux -L/usr/lib -lXext -lX11 -lm $^ -o $@
-
+	
 mlx_b:
 	$(MAKE) -C mlx_linux
 
