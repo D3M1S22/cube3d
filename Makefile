@@ -4,8 +4,9 @@ MAKE = make
 UNAME := $(shell uname)
 
 # Compiler flags
-CFLAGS = -Wextra -Wall -Werror -Wunreachable-code -Ofast -Imlx
-
+CFLAGS = -Wextra -Wall -Werror -Wunreachable-code -Ofast
+CFLAGS_MAC = -Imlx
+CFLAGS_LINUX = -I/usr/include -Imlx_linux -O3 -c 
 # Directories
 SRC_DIR = src
 LIBFT_DIR = libft
@@ -30,15 +31,14 @@ DEPS = -I$(SRC_DIR) -I$(GNL_DIR) -I$(LIBFT_DIR)
 
 all: mlx_b $(TARGET)
 
+# Target to compile mlx
+ifeq ($(UNAME), Darwin)
+
 # Rule for compiling object files
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $(@D)
-	$(CC) $(CFLAGS) $(DEPS) -c $< -o $@
+	$(CC) $(CFLAGS) $(CFLAGS_MAC) $(DEPS) -c $< -o $@
 
-
-
-# Target to compile mlx
-ifeq ($(UNAME), Darwin)
 $(TARGET): $(OBJ_FILES)
 	$(CC) $(CFLAGS) $(DEPS) -Lmlx -lmlx -framework OpenGL -framework AppKit $^ -o $@
 
@@ -47,17 +47,22 @@ mlx_b:
 
 # Clean target
 clean:
-	rm -rf $(OBJ_DIR) mlx_o
+	rm -rf $(OBJ_DIR)
 
 # Distclean target
-fclean: clean
-	rm -f $(TARGET)
+fclean:
+	rm -f $(TARGET) ./obj/mlx/*.a
 
 endif
 
 ifeq ($(UNAME), Linux)
+# Rule for compiling object files
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+	@mkdir -p $(@D)
+	$(CC) $(CFLAGS) $(CFLAGS_LINUX) $(DEPS) -c $< -o $@
+
 $(TARGET): $(OBJ_FILES)
-	$(CC) $(CFLAGS) $(DEPS) -Imlx_linux -Lmlx_linux -lmlx -lmlx_Linux -L/usr/lib -lXext -lX11 -lm $^ -o $@
+	$(CC) $(CFLAGS) $(CFLAGS_LINUX) $(DEPS) -Imlx_linux -Lmlx_linux -lmlx -lmlx_Linux -L/usr/lib -lXext -lX11 -lm $^ -o $@
 
 mlx_b:
 	$(MAKE) -C mlx_linux
