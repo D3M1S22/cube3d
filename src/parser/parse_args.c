@@ -14,7 +14,7 @@ void	pop_rgb(t_color *color, char *_rgb)
 void	init_map_textures(t_map *map)
 {
 	map->map_textures = (t_textures *)malloc(sizeof(t_textures));
-	map->map_textures->texture = (char **)malloc(sizeof(char *) * 4);
+	map->map_textures->texture = (void **)malloc(sizeof(void *) * 4);
 	map->map_textures->texture[NO] = 0;
 	map->map_textures->texture[SO] = 0;
 	map->map_textures->texture[WE] = 0;

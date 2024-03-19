@@ -7,11 +7,29 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
+# include <math.h>
+# include <X11/keysym.h>
+# include <X11/X.h>
+
+# if __APPLE__
+    #include <mlx.h>
+#endif
 
 #define NO 0 //Paths 
 #define SO 1
 #define WE 2
 #define EA 3
+#define P_SIZE 20
+#define M_SIZE 50
+
+typedef struct s_img
+{
+	void	*mlx_img;
+	char	*addr;
+	int		bpp; /* bits per pixel */
+	int		line_len;
+	int		endian;
+}	t_img;
 
 typedef struct s_color
 {
@@ -22,13 +40,19 @@ typedef struct s_color
 
 typedef struct s_textures
 {
-    char    **texture;
+    void    **texture;
 
 }t_textures;
 
 typedef struct s_player
 {
+    float x;
+    float y;
+    float dx;
+    float dy;
+    float da;
     t_textures  *player_textures;
+    int movement;
 } t_player;
 
 typedef struct s_map
@@ -42,10 +66,19 @@ typedef struct s_map
 
 } t_map;
 
+typedef struct s_mlx
+{
+    void *mlx;
+    void *win;
+} t_mlx;
+
 typedef struct s_game
 {
     t_map       *map;
     t_player    *player;
+    t_mlx       *mlx;
+    t_img       *img;
+    int         started;
 } t_game;
 
 // Errors
