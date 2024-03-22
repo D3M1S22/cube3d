@@ -10,9 +10,31 @@
 # include <math.h>
 # include <X11/keysym.h>
 # include <X11/X.h>
-
+#ifndef  M_PI
+    #define  M_PI  3.1415926535897932384626433
+#endif
+// 123 freccia sinistra
+// 124 freccia destra
+// 13 W
+// 0-2 ASD
 # if __APPLE__
     #include <mlx.h>
+    #define W 13
+    #define A 0
+    #define S 1
+    #define D 2
+    #define ARR_LEFT 123
+    #define ARR_RIGHT 124
+#endif
+    #include "../mlx_linux/mlx.h"
+    #define W 119
+    #define A 97
+    #define S 115
+    #define D 100
+    #define ARR_LEFT 65361
+    #define ARR_RIGHT 65363
+# if __LINUX__
+
 #endif
 
 #define NO 0 //Paths 

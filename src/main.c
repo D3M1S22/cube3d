@@ -81,7 +81,6 @@ void draw_line(t_img *img, int x0, int y0, int x1, int y1, int color) {
     if (x0 < x1) sx = 1; else sx = -1;
     if (y0 < y1) sy = 1; else sy = -1;
     int err = dx - dy;
-
     while (x0 != x1 || y0 != y1) {
         img_pix_put(img, x0, y0, color);
         int e2 = 2 * err;
@@ -181,7 +180,7 @@ void draw_map(t_game *game, t_map *map)
 
 void calculate_player_mov(t_player *player)
 {
-    if(player->movement == 123)
+    if(player->movement == ARR_LEFT)
     {
         player->da -= 0.1;
         if(player->da < 0)
@@ -191,7 +190,7 @@ void calculate_player_mov(t_player *player)
         player->dx = cos(player->da) * 5;
         player->dy = sin(player->da) * 5;
     }
-    if(player->movement == 124)
+    if(player->movement == ARR_RIGHT)
     {
         player->da += 0.1;
         if(player->da > 2 * M_PI)
@@ -201,15 +200,15 @@ void calculate_player_mov(t_player *player)
         player->dx = cos(player->da) * 5;
         player->dy = sin(player->da) * 5;
     }
-    if(player->movement == 13)
+    if(player->movement == W)
     {
-        player->x += player->dx;
-        player->y += player->dy;
+        player->x += player->dx/4;
+        player->y += player->dy/4;
     }
-    else if(player->movement == 1)
+    else if(player->movement == S)
     {
-        player->x -= player->dx;
-        player->y -= player->dy;
+        player->x -= player->dx/4;
+        player->y -= player->dy/4;
     }
 }
 
@@ -230,7 +229,7 @@ void draw_rays_3d(t_game *game, t_player *player, t_map *map)
         dof = 0;
         if(ra > M_PI)
         {
-            printf("> M_PI\n");
+            // printf("> M_PI\n");
             ry = (((int)player->y>>6)<<6)-0.0001;
             rx = (player->y - ry) * aTan + player->x;
             yo = -64;
@@ -238,7 +237,7 @@ void draw_rays_3d(t_game *game, t_player *player, t_map *map)
         }
         else if(ra < M_PI)
         {
-            printf("< M_PI\n");
+            // printf("< M_PI\n");
             ry = (((int)player->y>>6)<<6)+64;
             rx = (player->y - ry) * aTan + player->x;
             yo = 64;
@@ -246,7 +245,7 @@ void draw_rays_3d(t_game *game, t_player *player, t_map *map)
         }
         else if(fabs(ra - 0) < EPSILON || fabs(ra - M_PI) < EPSILON)
         {
-            printf("== PI or 0\n");
+            // printf("== PI or 0\n");
             rx = player->x;
             ry = player->y;
             dof = 8;
@@ -258,7 +257,7 @@ void draw_rays_3d(t_game *game, t_player *player, t_map *map)
             // mp = my * (map->len + 1) + mx;
             if( mx > 0 && my > 0 && mx < (map->len + 1) && my < (map->rows + 1) && map->grid[my][mx] == '1')
             {
-                printf("mx : %d my: %d\n", mx, my);
+                // printf("mx : %d my: %d\n", mx, my);
                 dof = 8;
             }
             else
@@ -299,9 +298,9 @@ int	render(t_game *game)
 int handle_keypress(int keycode, t_game *game)
 {
     printf("key code pressed %d\n", keycode);
-    if(keycode == 123 || keycode == 124 || keycode == 13 || (keycode >= 0 && keycode <= 2))
+    if(keycode == ARR_LEFT || keycode == ARR_RIGHT || keycode == W || keycode == A || keycode == S || keycode == D)
         game->player->movement = keycode;
-    // printf("keycode = %d, player_pos = x:%f y:%f\n", keycode, game->player->x, game->player->y);
+    printf("keycode = %d, player_pos = x:%f y:%f\n", keycode, game->player->x, game->player->y);
     return 0;
 }
 
