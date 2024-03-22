@@ -1,4 +1,5 @@
 #include "./cud3d.h"
+#define EPSILON 1e-1
 
 void    error(char *msg)
 {
@@ -135,17 +136,18 @@ int player_or(char is_player, t_game *game, int x, int y)
     {
         game->player->movement = -1;
         if(is_player == 'N')
-            game->player->da = M_PI;
+            game->player->da =  90;
         else if(is_player == 'W')
-            game->player->da = 0;
+            game->player->da = 180;
         else if(is_player == 'E')
-            game->player->da = M_PI;
+            game->player->da = 0;
         else if(is_player == 'S')
-            game->player->da = 3/2*M_PI;
-        game->player->x = ((x-1) * M_SIZE) + 25;
-        game->player->y = ((y-1) * M_SIZE) - 25;
-        game->player->dx = cos(game->player->da) * 5;
-        game->player->dy = sin(game->player->da) * 5;
+            game->player->da = 270;
+        write(1,"a\n",2);
+        game->player->x = ((x-1) * M_SIZE) + (M_SIZE / 2 - P_SIZE /2);
+        game->player->y = ((y-1) * M_SIZE) + (M_SIZE / 2 - P_SIZE /2);
+        game->player->dx = cos(game->player->da);
+        game->player->dy = sin(game->player->da);
     }
     return 1;
 }
@@ -162,14 +164,14 @@ void draw_map(t_game *game, t_map *map)
         while(map->grid[y][++x] != 'c')
         {
             if(map->grid[y][x] == ' ')
-                render_rect(game->img, (t_rect){(x-1) * M_SIZE, (y-1) * M_SIZE, M_SIZE, M_SIZE, YELLOW_PIXEL});
+                render_rect(game->img, (t_rect){(x-1) * M_SIZE, (y-1) * M_SIZE, M_SIZE-1, M_SIZE-1, YELLOW_PIXEL});
             else if(map->grid[y][x] == '1')
-                render_rect(game->img, (t_rect){(x-1) * M_SIZE, (y-1) * M_SIZE, M_SIZE, M_SIZE, GREEN_PIXEL});
+                render_rect(game->img, (t_rect){(x-1) * M_SIZE, (y-1) * M_SIZE, M_SIZE-1, M_SIZE-1, GREEN_PIXEL});
             else if(map->grid[y][x] == '0')
-                render_rect(game->img, (t_rect){(x-1) * M_SIZE, (y-1) * M_SIZE, M_SIZE, M_SIZE, GRAY_PIXEL});
+                render_rect(game->img, (t_rect){(x-1) * M_SIZE, (y-1) * M_SIZE, M_SIZE-1, M_SIZE-1, GRAY_PIXEL});
             else if(player_or(map->grid[y][x], game, x, y))
             {
-                render_rect(game->img, (t_rect){(x-1) * M_SIZE, (y-1) * M_SIZE, M_SIZE, M_SIZE, GRAY_PIXEL});
+                render_rect(game->img, (t_rect){(x-1) * M_SIZE, (y-1) * M_SIZE, M_SIZE-1, M_SIZE-1, GRAY_PIXEL});
             }
         }
     }
@@ -181,7 +183,7 @@ void calculate_player_mov(t_player *player)
 {
     if(player->movement == 123)
     {
-        player->da -= 0.05;
+        player->da -= 0.1;
         if(player->da < 0)
         {
             player->da += 2 * M_PI;
@@ -191,7 +193,7 @@ void calculate_player_mov(t_player *player)
     }
     if(player->movement == 124)
     {
-        player->da += 0.05;
+        player->da += 0.1;
         if(player->da > 2 * M_PI)
         {
             player->da -= 2 * M_PI;
@@ -211,14 +213,71 @@ void calculate_player_mov(t_player *player)
     }
 }
 
+float degToRad(int a) { return a*M_PI/180.0;}
+int FixAng(int a){ if(a>359){ a-=360;} if(a<0){ a+=360;} return a;}
+
+void draw_rays_3d(t_game *game, t_player *player, t_map *map)
+{
+    int r, mx, my, dof;
+    float rx, ry, ra, xo, yo, aTan;
+
+    r = -1;
+    ra = player->da;
+    
+    while(++r < 1)
+    {
+        aTan = -1/tan(ra);
+        dof = 0;
+        if(ra > M_PI)
+        {
+            printf("> M_PI\n");
+            ry = (((int)player->y>>6)<<6)-0.0001;
+            rx = (player->y - ry) * aTan + player->x;
+            yo = -64;
+            xo = -yo * aTan;
+        }
+        else if(ra < M_PI)
+        {
+            printf("< M_PI\n");
+            ry = (((int)player->y>>6)<<6)+64;
+            rx = (player->y - ry) * aTan + player->x;
+            yo = 64;
+            xo = -yo * aTan;
+        }
+        else if(fabs(ra - 0) < EPSILON || fabs(ra - M_PI) < EPSILON)
+        {
+            printf("== PI or 0\n");
+            rx = player->x;
+            ry = player->y;
+            dof = 8;
+        }
+        while(dof < 8)
+        {
+            mx = ((int)(rx)>>6) + 1;
+            my = ((int)(ry)>>6) + 1;
+            // mp = my * (map->len + 1) + mx;
+            if( mx > 0 && my > 0 && mx < (map->len + 1) && my < (map->rows + 1) && map->grid[my][mx] == '1')
+            {
+                printf("mx : %d my: %d\n", mx, my);
+                dof = 8;
+            }
+            else
+            {
+                rx += xo;
+                ry += yo;
+                dof += 1;
+            }
+        }
+    draw_line(game->img, player->x + 10, player->y + 10, rx, ry, BLUE_PIXEL);
+    }
+}
+
 void draw_player(t_game *game, t_player *player)
 {
     calculate_player_mov(player);
     render_rect(game->img, (t_rect){player->x, player->y, P_SIZE, P_SIZE, RED_PIXEL});
-    draw_line(game->img, player->x+10, player->y+10, (player->x+10)+player->dx * 5, (player->y+10)+player->dy * 5, BLUE_PIXEL);
+    draw_line(game->img, player->x+10, player->y+10, (player->x+10)+player->dx * 5, (player->y+10)+player->dy * 5, RED_PIXEL);
 }
-
-
 
 int	render(t_game *game)
 {
@@ -229,7 +288,8 @@ int	render(t_game *game)
         // render_background(game->img, WHITE_PIXEL, ((game->map->rows+1) * 50), ((game->map->len+1) * 50));
     draw_map(game, game->map);
     draw_player(game, game->player);
-        // ciao++;
+    draw_rays_3d(game, game->player, game->map);
+    // ciao++;
     // }
     mlx_put_image_to_window(game->mlx->mlx, game->mlx->win, game->img->mlx_img, 0, 0);
 

@@ -20,7 +20,7 @@
 #define WE 2
 #define EA 3
 #define P_SIZE 20
-#define M_SIZE 50
+#define M_SIZE 64
 
 typedef struct s_img
 {
