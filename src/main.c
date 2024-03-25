@@ -161,11 +161,34 @@ void draw_map(t_game *game, t_map *map)
     game->started = 1;
 }
 
-void calculate_player_mov(t_player *player)
+int wall_collision(t_map *map, t_player *player)
+{
+    float x;
+    float y;
+
+    if (player->movement == W)
+    {
+        x = player->x + player->dx * MP;
+        y = player->y + player->dy * MP;
+    }
+    else if (player->movement == S)
+    {
+        x = player->x - player->dx * MP;
+        y = player->y - player->dy * MP;
+    }
+    x /= 16;
+    y /= 16;
+    // printf("x = %f    y = %f   map= %c\n", x, y, map->grid[10][29]);
+    if (map->grid[(int)y+1][(int)x+1] == '1')
+        return (1);
+    return (0);
+}
+
+void calculate_player_mov(t_map *map, t_player *player)
 {
     if(player->movement == ARR_LEFT)
     {
-        player->da -= 0.1;
+        player->da -= 0.1 * MP;
         if(player->da < 0)
         {
             player->da += 2 * M_PI;
@@ -175,7 +198,7 @@ void calculate_player_mov(t_player *player)
     }
     if(player->movement == ARR_RIGHT)
     {
-        player->da += 0.1;
+        player->da += 0.1 * MP;
         if(player->da > 2 * M_PI)
         {
             player->da = 0;
@@ -185,13 +208,17 @@ void calculate_player_mov(t_player *player)
     }
     if(player->movement == W)
     {
-        player->x += player->dx;
-        player->y += player->dy;
+        if (wall_collision(map, player))
+            return ;
+        player->x += player->dx * MP;
+        player->y += player->dy * MP;
     }
     else if(player->movement == S)
     {
-        player->x -= player->dx;
-        player->y -= player->dy;
+        if (wall_collision(map, player))
+            return ;
+        player->x -= player->dx * MP;
+        player->y -= player->dy * MP;
     }
 }
 
@@ -221,7 +248,7 @@ void draw_rays_3d(t_game *game, t_map *map, t_player *player)
         // HORIZONTAL CHECK
         aTan = -1/tan(ra);
         dof = 0;
-        distH = 100000000000;
+        distH = 100000000;
         hx = player->x;
         hy = player->y;
         if(ra > M_PI)
@@ -265,7 +292,7 @@ void draw_rays_3d(t_game *game, t_map *map, t_player *player)
         dof = 0;
         rx = 0;
         ry = 0;
-        distV = 100000000000;
+        distV = 100000000;
         vx = player->x;
         vy = player->y;
         if(ra > M_PI/2 && ra < (3*M_PI)/2)
@@ -288,7 +315,7 @@ void draw_rays_3d(t_game *game, t_map *map, t_player *player)
             rx += xo;
             ry += yo;
         }
-        while(dof < 9)
+        while(dof < (map->len + 1))
         {
             my = ((int)ry>>4) + 1;
             mx = ((int)rx>>4) + 1;
@@ -297,7 +324,7 @@ void draw_rays_3d(t_game *game, t_map *map, t_player *player)
                 vx = rx;
                 vy = ry;
                 distV = distance(player->x, player->y, vx, vy);
-                dof = 9;
+                dof = (map->len +1);
             }
             else
             {
@@ -315,6 +342,8 @@ void draw_rays_3d(t_game *game, t_map *map, t_player *player)
             rx = hx;
             ry = hy;
         }
+        if(r == 30)
+            printf("rx = %f  ry = %f\n", rx, ry);
         draw_line(game->img, player->x + 2.5, player->y + 2.5, rx, ry, BLUE_PIXEL);
         ra += DR;
         if(ra < 0)
@@ -322,15 +351,14 @@ void draw_rays_3d(t_game *game, t_map *map, t_player *player)
         else if(ra > 2 * M_PI)
             ra -= 2 * M_PI;
     }
-    mlx_do_sync(game->mlx->mlx);
     (void)game;
 }
 
 
 void draw_player(t_game *game, t_player *player)
 {
-    calculate_player_mov(player);
-    render_rect(game->img, (t_rect){player->x, player->y, P_SIZE, P_SIZE, RED_PIXEL});
+    calculate_player_mov(game->map, player);
+    render_rect(game->img, (t_rect){player->x, player->y, 1, 1, RED_PIXEL});
 }
 
 int	render(t_game *game)
@@ -404,7 +432,7 @@ int	main(int argc, char **argv)
     parse_map(game->map);
     checker_map(game->map);
     init_player(game->player, game->map->grid);
-    redef_map(game->map);
+    // redef_map(game->map);
     /// TEST IMAGE CREATION WITH PIXEL AND COLORS
 
 	game->mlx->mlx = mlx_init();

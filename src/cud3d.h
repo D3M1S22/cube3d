@@ -19,6 +19,7 @@
 // 0-2 ASD
 # if __APPLE__
     #include <mlx.h>
+    #define MP 1
     #define W 13
     #define A 0
     #define S 1
@@ -27,16 +28,15 @@
     #define ARR_RIGHT 124
 #endif
 
-# if __LINUX__
-
-#include "../mlx_linux/mlx.h"
-#define W 119
-#define A 97
-#define S 115
-#define D 100
-#define ARR_LEFT 65361
-#define ARR_RIGHT 65363
-
+# ifdef __linux__
+    #include "../mlx_linux/mlx.h"
+    #define MP 0.05
+    #define W 119
+    #define A 97
+    #define S 115
+    #define D 100
+    #define ARR_LEFT 65361
+    #define ARR_RIGHT 65363
 #endif
 
 #define NO 0 //Paths 
