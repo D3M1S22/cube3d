@@ -26,14 +26,16 @@
     #define ARR_LEFT 123
     #define ARR_RIGHT 124
 #endif
-    #include "../mlx_linux/mlx.h"
-    #define W 119
-    #define A 97
-    #define S 115
-    #define D 100
-    #define ARR_LEFT 65361
-    #define ARR_RIGHT 65363
+
 # if __LINUX__
+
+#include "../mlx_linux/mlx.h"
+#define W 119
+#define A 97
+#define S 115
+#define D 100
+#define ARR_LEFT 65361
+#define ARR_RIGHT 65363
 
 #endif
 
@@ -41,8 +43,8 @@
 #define SO 1
 #define WE 2
 #define EA 3
-#define P_SIZE 20
-#define M_SIZE 64
+#define P_SIZE 5
+#define M_SIZE 16
 
 typedef struct s_img
 {
