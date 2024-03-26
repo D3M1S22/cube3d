@@ -161,6 +161,35 @@ void draw_map(t_game *game, t_map *map)
     game->started = 1;
 }
 
+void draw_minimap(t_game *game, t_map *map, t_player *player)
+{
+    int x;
+    int y;
+    int row;
+    int col;
+
+    x = (player->x - 4)/16;
+    y = (player->y - 4)/16;
+    row = -1;
+    while(++row + y < y + 8)
+    {
+        col = -1;
+        while(++col + x < x + 8)
+        {
+            if(y + row < map->rows + 2 && x + col < map->len + 2 )
+            {
+                printf("y: %d, x: %d, row: %d, col: %d\n", y, x, row, col);
+                if(map->grid[y + row][x + col] == '1')
+                    render_rect(game->img, (t_rect){col * M_SIZE, row * M_SIZE, M_SIZE-1, M_SIZE-1, GREEN_PIXEL});
+                else if(map->grid[y + row][x + col] == ' ')
+                    render_rect(game->img, (t_rect){col * M_SIZE, row * M_SIZE, M_SIZE-1, M_SIZE-1, YELLOW_PIXEL});
+                else if(map->grid[y + row][x + col] == '0')
+                    render_rect(game->img, (t_rect){col * M_SIZE, row * M_SIZE, M_SIZE-1, M_SIZE-1, GRAY_PIXEL});
+            }
+        }
+    }
+}
+
 int wall_collision(t_map *map, t_player *player)
 {
     float x;
@@ -176,9 +205,13 @@ int wall_collision(t_map *map, t_player *player)
         x = player->x - player->dx * MP;
         y = player->y - player->dy * MP;
     }
+    else
+    {
+        x = 0;
+        y = 0;
+    }
     x /= 16;
     y /= 16;
-    // printf("x = %f    y = %f   map= %c\n", x, y, map->grid[10][29]);
     if (map->grid[(int)y+1][(int)x+1] == '1')
         return (1);
     return (0);
@@ -234,9 +267,9 @@ float distance(float ax, float ay, float bx, float by)
 void draw_rays_3d(t_game *game, t_map *map, t_player *player)
 {
     // trying to find first point horizontally
-    float rx, ry, ra, xo, yo, aTan, nTan;
-    int dof, mx, my;
+    float rx, ry, ra, xo, yo, aTan, nTan, distT, lineH, lineO;
     float distH, distV, hx, hy, vx, vy;
+    int dof, mx, my;
     int r = -1;
     ra = player->da - (DR * 30);
     if(ra < 0)
@@ -337,21 +370,29 @@ void draw_rays_3d(t_game *game, t_map *map, t_player *player)
         {
             rx = vx;
             ry = vy;
+            distT = distV;
         }else if(distV>distH)
         {
             rx = hx;
             ry = hy;
+            distT = distH;
         }
         if(r == 30)
             printf("rx = %f  ry = %f\n", rx, ry);
-        draw_line(game->img, player->x + 2.5, player->y + 2.5, rx, ry, BLUE_PIXEL);
+        // draw_line(game->img, player->x, player->y, rx, ry, BLUE_PIXEL);
+
+        lineH = (10 * 980) /distT;
+        if(lineH > 980)
+            lineH = 980;
+        lineO = 450 - lineH/2;
+        render_rect(game->img, (t_rect){r*15,lineO, 15, distance(r*15,lineO, r*15, lineH+lineO), RED_PIXEL});
+        // draw_line(game->img, r*8+530,lineO , r*8+530, lineH+lineO, RED_PIXEL);
         ra += DR;
         if(ra < 0)
             ra += 2 * M_PI;
         else if(ra > 2 * M_PI)
             ra -= 2 * M_PI;
     }
-    (void)game;
 }
 
 
@@ -365,10 +406,11 @@ int	render(t_game *game)
 {
     if (game->mlx->win == NULL)
         return (1);
-    render_background(game->img, 0x0000, ((game->map->rows+1) * M_SIZE), ((game->map->len+1) * M_SIZE));
-    draw_map(game, game->map);
-    draw_player(game, game->player);
+    render_background(game->img, 0x0000, 1024, 980);
     draw_rays_3d(game, game->map, game->player);
+    // draw_map(game, game->map);
+    draw_minimap(game, game->map, game->player);
+    draw_player(game, game->player);
     mlx_put_image_to_window(game->mlx->mlx, game->mlx->win, game->img->mlx_img, 0, 0);
 
     return (0);
@@ -410,6 +452,7 @@ void init_player(t_player *player, char **map)
                     player->da = 0;
                 if(map[y][x] == 'S')
                     player->da = M_PI/2;
+                map[y][x] = '0';
                 player->x = ((x-1) * M_SIZE) + (M_SIZE / 2 - P_SIZE /2);
                 player->y = ((y-1) * M_SIZE) + (M_SIZE / 2 - P_SIZE /2);
                 player->dx = cos(player->da) * 5;
@@ -438,7 +481,7 @@ int	main(int argc, char **argv)
 	game->mlx->mlx = mlx_init();
 	if (game->mlx->mlx == NULL)
 		return (MLX_ERROR);
-	game->mlx->win = mlx_new_window(game->mlx->mlx, (game->map->len + 1)*M_SIZE * 3, (game->map->rows + 1)*M_SIZE * 3, "CUB3D");
+	game->mlx->win = mlx_new_window(game->mlx->mlx, 1024, 980, "CUB3D");
 	if (game->mlx->win == NULL)
 	{
 		free(game->mlx->win);
@@ -446,7 +489,7 @@ int	main(int argc, char **argv)
 	}
 
 	/* Setup hooks */ 
-	game->img->mlx_img = mlx_new_image(game->mlx->mlx, (game->map->len + 1)*M_SIZE, (game->map->rows + 1)*M_SIZE);
+	game->img->mlx_img = mlx_new_image(game->mlx->mlx, 1024, 980);
 	
 	game->img->addr = mlx_get_data_addr(game->img->mlx_img, &game->img->bpp,
 			&game->img->line_len, &game->img->endian);
