@@ -267,9 +267,9 @@ void draw_rays_3d(t_game *game, t_map *map, t_player *player)
         }else{
             rx += player->x;
             ry += player->y;
-            dof = 9;
+            dof = (map->longest);
         }
-        while(dof < 9)
+        while(dof < (map->longest))
         {
             my = ((int)ry>>4) + 1;
             mx = ((int)rx>>4) + 1;
@@ -278,7 +278,7 @@ void draw_rays_3d(t_game *game, t_map *map, t_player *player)
                 hx = rx;
                 hy = ry;
                 distH = distance(player->x, player->y, hx, hy);
-                dof = 9;
+                dof = (map->longest);
             }
             else
             {
@@ -311,11 +311,11 @@ void draw_rays_3d(t_game *game, t_map *map, t_player *player)
         }
         else
         {
-            dof +=1;
+            dof = map->longest;
             rx += xo;
             ry += yo;
         }
-        while(dof < (map->len + 1))
+        while(dof < (map->longest))
         {
             my = ((int)ry>>4) + 1;
             mx = ((int)rx>>4) + 1;
@@ -324,7 +324,7 @@ void draw_rays_3d(t_game *game, t_map *map, t_player *player)
                 vx = rx;
                 vy = ry;
                 distV = distance(player->x, player->y, vx, vy);
-                dof = (map->len +1);
+                dof = (map->longest);
             }
             else
             {
@@ -358,7 +358,7 @@ void draw_rays_3d(t_game *game, t_map *map, t_player *player)
 void draw_player(t_game *game, t_player *player)
 {
     calculate_player_mov(game->map, player);
-    render_rect(game->img, (t_rect){player->x, player->y, 1, 1, RED_PIXEL});
+    render_rect(game->img, (t_rect){player->x, player->y, P_SIZE, P_SIZE, RED_PIXEL});
 }
 
 int	render(t_game *game)

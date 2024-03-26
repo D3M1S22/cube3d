@@ -80,5 +80,9 @@ void	parse_map(t_map *map)
 	map->len = x -1;
 	if (map->len <  2 || map->rows < 2)
 		error("wrong map dimension");
+	if (map->len > map->rows)
+		map->longest = map->len + 1;
+	else
+		map->longest = map->rows + 1;
 	pop_mtx(mtx, map, x);
 }

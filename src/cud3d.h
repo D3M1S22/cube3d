@@ -43,7 +43,7 @@
 #define SO 1
 #define WE 2
 #define EA 3
-#define P_SIZE 5
+#define P_SIZE 1
 #define M_SIZE 16
 
 typedef struct s_img
@@ -83,6 +83,7 @@ typedef struct s_map
 {
     int         len;
     int         rows;
+    int         longest;
     char        **grid;
     t_textures  *map_textures;
     t_color     *ceiling;
